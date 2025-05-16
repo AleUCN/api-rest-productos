@@ -9,6 +9,26 @@ exports.createProduct = async (req, res) => {
       return res.status(400).json({ message: 'Faltan campos requeridos.' });
     }
 
+    if (typeof name !== 'string' || name.length > 50) {
+      return res.status(400).json({ message: 'El nombre debe ser un texto de hasta 50 caracteres.' });
+    }
+
+    if (typeof sku !== 'string' || sku.length > 30) {
+      return res.status(400).json({ message: 'El SKU debe ser un texto de hasta 30 caracteres.' });
+    }
+
+    if (!Number.isInteger(price) || price <= 0) {
+      return res.status(400).json({ message: 'El precio debe ser un número entero mayor a 0.' });
+    }
+
+    if (!Number.isInteger(stock) || stock < 0) {
+      return res.status(400).json({ message: 'El stock debe ser un número entero igual o mayor a 0.' });
+    }
+
+    if (active != null && typeof active !== 'boolean') {
+      return res.status(400).json({ message: 'El campo "active" debe ser booleano (true o false).' });
+    }
+
     const existing = await Product.findOne({ sku });
     if (existing) {
       return res.status(400).json({ message: 'El SKU ya está registrado.' });
@@ -56,6 +76,41 @@ exports.getPaginatedProducts = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
+
+    const { name, sku, price, stock, active } = req.body;
+
+    if (name !== undefined) {
+      if (typeof name !== 'string' || name.length > 50) {
+        return res.status(400).json({ message: 'El nombre debe ser un texto de hasta 50 caracteres.' });
+      }
+    }
+
+    if (sku !== undefined) {
+      if (typeof sku !== 'string' || sku.length > 30) {
+        return res.status(400).json({ message: 'El SKU debe ser un texto de hasta 30 caracteres.' });
+      }
+      const existing = await Product.findOne({ sku });
+      if (existing && existing.uuid !== req.params.uuid) {
+        return res.status(400).json({ message: 'El SKU ya está registrado por otro producto.' });
+      }
+    }
+
+    if (price !== undefined) {
+      if (!Number.isInteger(price) || price <= 0) {
+        return res.status(400).json({ message: 'El precio debe ser un número entero mayor a 0.' });
+      }
+    }
+
+    if (stock !== undefined) {
+      if (!Number.isInteger(stock) || stock < 0) {
+        return res.status(400).json({ message: 'El stock debe ser un número entero igual o mayor a 0.' });
+      }
+    }
+
+    if (active !== undefined && typeof active !== 'boolean') {
+      return res.status(400).json({ message: 'El campo "active" debe ser booleano (true o false).' });
+    }
+
     const updatedProduct = await Product.findOneAndUpdate(
       { uuid: req.params.uuid },
       req.body,
