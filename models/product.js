@@ -7,7 +7,7 @@ const productSchema = new Schema({
     required: true,
     unique: true
   },
-  nombre: {
+  name: {
     type: String,
     required: true,
     maxlength: 50,
@@ -20,7 +20,7 @@ const productSchema = new Schema({
     maxlength: 30,
     trim: true
   },
-  precio: {
+  price: {
     type: Number,
     required: true,
     min: 1
@@ -30,7 +30,7 @@ const productSchema = new Schema({
     required: true,
     min: 0
   },
-  activo: {
+  active: {
     type: Boolean,
     default: true
   }
