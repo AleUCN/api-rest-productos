@@ -14,7 +14,7 @@ exports.login = (req, res) => {
     username: validUsername
   };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '60d' }); // 60 días
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '69d' });
 
   res.status(200).json({ token });
 };
