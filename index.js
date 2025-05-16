@@ -3,19 +3,19 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+const productRoutes = require('./routes/productRoutes');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+app.use('/products', productRoutes);
 
-app.get('/', (req, res) => {
-  res.send('API REST - Productos');
-});
+const PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('Conexión a MongoDB exitosa');
-    app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch(err => console.error('Error al conectar a MongoDB', err));
+  .catch(err => console.error('MongoDB connection error:', err));
